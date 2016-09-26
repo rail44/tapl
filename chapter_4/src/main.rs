@@ -3,7 +3,7 @@
 #[derive(Clone)]
 struct Info;
 
-const DUMMY_INFO:Info = Info;
+const DUMMY_INFO: Info = Info;
 
 #[derive(Clone)]
 enum Term {
@@ -46,6 +46,7 @@ fn eval_1(t: Term) -> Term {
             Term::Succ(info, box t_1_2)
         },
         Term::Pred(_, box Term::Zero(_)) =>  Term::Zero(DUMMY_INFO),
+        // https://github.com/rust-lang/rust/issues/15287
         Term::Pred(_, box Term::Succ(_, box ref nv_1)) if is_numeric_val(nv_1) =>  nv_1.clone(),
         Term::Pred(info, box t_1) => {
             let t_1_2 = eval_1(t_1);
