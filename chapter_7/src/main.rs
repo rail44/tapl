@@ -23,21 +23,21 @@ fn print_tm(ctx: Context, t: Term) {
             let (ctx_2, x_2) = pick_fresh_name(ctx, x);
             print!("(lambda {} . ", x_2);
             print_tm(ctx_2, t_1);
-            println!(")");
+            print!(")");
         },
         Term::App(_, box t_1, box t_2) => {
             print!("(");
             print_tm(ctx.clone(), t_1);
             print!(" ");
             print_tm(ctx, t_2);
-            println!(")");
+            print!(")");
         },
         Term::Var(fi, x, n) => {
             if ctx_length(&ctx) == n {
-                println!("{}", index2name(fi, &ctx, x));
+                print!("{}", index2name(fi, &ctx, x));
                 return;
             }
-            println!("[bad index]");
+            print!("[bad index]");
         }
     }
 }
@@ -99,7 +99,7 @@ fn term_subst_top(s: Term, t: Term) -> Term {
     term_shift(-1, term_subst(0, term_shift(1, s), t))
 }
 
-fn is_val(ctx: &Context, t: &Term) -> bool {
+fn is_val(_: &Context, t: &Term) -> bool {
     match t {
         &Term::Abs(_, _, _) => true,
         _ => false,
@@ -129,5 +129,20 @@ fn eval(ctx: &Context, t: Term) -> Term {
 }
 
 fn main() {
-    println!("Hello, world!");
+    let ctx = Vec::new();
+    let term = Term::App(Info, 
+        box Term::Abs(Info,
+            "z".to_string(),
+            box Term::Abs(Info,
+                "y".to_string(),
+                box Term::Var(Info, 1, 2)
+            ),
+        ),
+        box Term::Abs(Info,
+            "x".to_string(),
+            box Term::Var(Info, 0, 1)
+        ),
+    );
+    let evaluated = eval(&ctx, term);
+    print_tm(ctx, evaluated); 
 }
